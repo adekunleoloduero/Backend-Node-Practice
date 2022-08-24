@@ -2,33 +2,83 @@ const fs = require('fs');
 const path = require('path');
 
 
-// const booksDb = path.join(__dirname, 'models', 'books.js');
+
 const booksDbPath = getBooksDbPath();
 
-//Books Routes
+//--Books APIs--
 
+//For /books/getall
 function getAllBooks(req, res) {
-    fs.readFile(booksDbPath, 'utf8', (err, data) => {
-        if (err) {
-            res.writeHead(400);
-            console.log(err);
-        }
-        if  (!data) {
-            res.writeHead(404);
-            res.end('No record found.');
-        }
+    returnAllBooks().
+    then(books => {
         res.writeHead(200);
-        res.end(data);
-    }); 
+        res.end(books);
+    }).
+    catch(err => {
+        res.writeHead(400);
+        res.end(JSON.stringify({message: err}));
+    });
 }
 
+//For /books/addbook
 function addBook(req, res) {
+    const requestDataStream = [];
+    getRequestData(req, requestDataStream);
+    req.on("end", async () => {
+        const wholeRequestData = Buffer.concat(requestDataStream).toString();
+        await returnAllBooks().
+        then(books => {
+            const booksArray = JSON.parse(books);
+            const newId = booksArray[booksArray.length - 1].id + 1;
+            let newBookDetails = JSON.parse(wholeRequestData);
+            newBookDetails.id = newId;
+            const updatedBooksRecord = [...booksArray, newBookDetails];
+            writeUpdatedRecord(updatedBooksRecord);
+            res.writeHead(201);
+            res.end(JSON.stringify({msg: "One (1) book was added successfully."}));
+        }).
+        catch(err => {
+            res.writeHead(err.statusCode);
+            res.end(JSON.stringify({message: err.msg}));
+        });
+    });
+}
+
+//--End of books APIs--
     
+
+//--Utitlities--
+
+//Request data
+function getRequestData(req, requestDataStream) {
+    req.on("data", (chunk) => {
+        requestDataStream.push(chunk);
+    });
 }
 
 
-    
+function returnAllBooks() {
+    return new Promise((resolve, reject) => {
+        fs.readFile(booksDbPath, 'utf8', (err, data) => {
+            if (err) {
+                reject({"msg":'Bad request. Try again later.', "statusCode":400});
+            }
+            if (!data) {
+                reject({"msg":'The book store is empty.', "statusCode":404});
+            }
+            resolve(data);
+        }); 
+    });   
+}
 
+
+//Write updated record into books database
+function writeUpdatedRecord(updatedBooksRecord) {
+    updatedBooksRecord = JSON.stringify(updatedBooksRecord);
+    fs.writeFile(booksDbPath, updatedBooksRecord, (err) => {
+        if (err) console.log(err);
+    });
+}
 
 
 //Books data base path
@@ -37,13 +87,15 @@ function getBooksDbPath() {
     const separator = path.sep;
     const requiredDirectory = thisDirectory.replace(`${separator}controllers`, `${separator}models`);
     const requiredPath = path.join(requiredDirectory, 'books.json');
-    console.log(requiredPath);
     return requiredPath;
 }
 
 
+//--End of Utilities--
 
-//Expose functionalities
+
+//--Functionalities Exposed--
 module.exports = {
-    getAllBooks
+    getAllBooks,
+    addBook,
 }

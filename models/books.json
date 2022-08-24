@@ -18,9 +18,15 @@
         "id": 3
     },
     {
-        "title": "My New Book",
+        "title": "My second book",
         "author": "Sheriff Adekunle Tajudeen",
-        "year": 2022,
+        "year": 2023,
         "id": 4
+    },
+    {
+        "title": "Gospel of Wealth for Omoluabis",
+        "author": "Sheriff Adekunle Tajudeen",
+        "year": 2027,
+        "id": 5
     }
 ]
