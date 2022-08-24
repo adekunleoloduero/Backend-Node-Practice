@@ -1,4 +1,5 @@
 const http = require('http');
+const { getAllBooks } = require('./controllers/books');
 
 
 
@@ -8,7 +9,12 @@ const HOST = 'localhost';
 
 //Request Handler
 function requestHandler(req, res) {
-
+    //Get all books
+    if (req.url === '/books/getall' && req.method === 'GET') {
+        getAllBooks(req, res);
+    } else if (req.url === '/books/addbook' && req.method === 'POST') {
+        addBook(req, res);
+    }
 }
 
 
