@@ -1,5 +1,6 @@
 const http = require('http');
 const { getAllBooks, addBook } = require('./controllers/books');
+const { passwordAuthentication } = require('./controllers/authentication');
 
 
 
@@ -9,10 +10,17 @@ const HOST = 'localhost';
 
 //Request Handler
 function requestHandler(req, res) {
-    //Get all books
-    if (req.url === '/books/getall' && req.method === 'GET') {
-        getAllBooks(req, res);
-    } else if (req.url === '/books/addbook' && req.method === 'POST') {
+    if (req.url === '/books/getall' && req.method === 'GET') { //Get all books
+        passwordAuthentication(req, res).
+        then(success => {
+            getAllBooks(req, res);
+            console.log(success);
+        }).
+        catch(error => {
+            console.log(error);
+        });
+        
+    } else if (req.url === '/books/addbook' && req.method === 'POST') { //Add a book
         addBook(req, res);
     }
 }
