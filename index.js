@@ -1,6 +1,6 @@
 const http = require('http');
 const { getAllBooks, addBook } = require('./controllers/books');
-const { passwordAuthentication } = require('./controllers/authentication');
+const { passwordAuthentication, tokenAuthentication } = require('./controllers/authentication');
 
 
 
@@ -11,17 +11,36 @@ const HOST = 'localhost';
 //Request Handler
 function requestHandler(req, res) {
     if (req.url === '/books/getall' && req.method === 'GET') { //Get all books
-        passwordAuthentication(req, res).
-        then(success => {
+        //1. Password Authentication
+        // passwordAuthentication(req, res).
+        // then(() => {
+        //     getAllBooks(req, res);
+        // }).
+        // catch(error => {
+        //     res.writeHead(401);
+        //     res.end(JSON.stringify(error));
+        // });
+
+        //2. Token/API_KEY authentication
+        tokenAuthentication(req, res).
+        then(() => {
             getAllBooks(req, res);
-            console.log(success);
         }).
         catch(error => {
-            console.log(error);
+            res.writeHead(401);
+            res.end(JSON.stringify(error));
         });
         
+        
     } else if (req.url === '/books/addbook' && req.method === 'POST') { //Add a book
-        addBook(req, res);
+        tokenAuthentication(req, res).
+        then(() => {
+            addBook(req, res);
+        }).
+        catch(error => {
+            res.writeHead(401);
+            res.end(JSON.stringify(error));
+        });
     }
 }
 

@@ -13,10 +13,6 @@ function getAllBooks(req, res) {
     then(books => {
         res.writeHead(200);
         res.end(books);
-    }).
-    catch(err => {
-        res.writeHead(400);
-        res.end(JSON.stringify({message: err.msg}));
     });
 }
 

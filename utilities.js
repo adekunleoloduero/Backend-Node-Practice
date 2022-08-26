@@ -14,16 +14,10 @@ function getRequestData(req, requestDataStream) {
 function returnAllRecord(dbPath) {
     return new Promise((resolve, reject) => {
         fs.readFile(dbPath, 'utf8', (err, data) => {
-            const error = {msg:null};
-           if(err) {
-               error.msg = "Oops, something went wrong.";
-               reject(error);
-           }
-           if (!data) {
-                error.msg = "Record is empty.";
-               reject(error);
-           }
-            resolve(data);
+        if(err) {
+            console.log(err);
+        }
+        resolve(data);
         }); 
     });   
 }

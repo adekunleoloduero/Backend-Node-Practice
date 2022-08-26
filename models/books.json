@@ -34,5 +34,17 @@
         "author": "Sheriff Adekunle Tajudeen",
         "year": 2030,
         "id": 6
+    },
+    {
+        "title": "My New Book",
+        "author": "Sheriff Adekunle Tajudeen",
+        "year": 2025,
+        "id": 7
+    },
+    {
+        "title": "Learn Node.Js like a Baby",
+        "author": "Sheriff Adekunle Tajudeen",
+        "year": 2025,
+        "id": 8
     }
 ]
