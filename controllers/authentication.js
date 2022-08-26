@@ -1,5 +1,7 @@
-// const fs = require('fs');
-// const path = require('path');
+require('dotenv').config();
+
+const TOKEN = process.env.API_KEY;
+
 const { getRequestData, returnAllRecord, getDbPath } = require('../utilities');
 
 const usersDbPath = getDbPath('users.json');
@@ -37,7 +39,25 @@ function passwordAuthentication(req, res) {
 }
 
 
+function tokenAuthentication(req, res) {
+    return new Promise((resolve, reject) => {
+        const requestData = req.headers.authorization;
+        if (!requestData) {
+            reject({error: "No token provided. Please, enter your token again."});
+            return;
+        }
+
+        const token = requestData.split(" ")[1];
+        if (token !== TOKEN) {
+            reject({error: "In valid token."});
+            return;
+        }
+        resolve();
+    });   
+}
+
 
 module.exports = {
-passwordAuthentication,
+    passwordAuthentication,
+    tokenAuthentication,
 }
