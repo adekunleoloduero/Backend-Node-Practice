@@ -12,12 +12,12 @@ const HOST = 'localhost';
 function requestHandler(req, res) {
     if (req.url === '/books/getall' && req.method === 'GET') { //Get all books
         passwordAuthentication(req, res).
-        then(success => {
+        then(() => {
             getAllBooks(req, res);
-            console.log(success);
         }).
         catch(error => {
-            console.log(error);
+            res.writeHead(401);
+            res.end(JSON.stringify(error));
         });
         
     } else if (req.url === '/books/addbook' && req.method === 'POST') { //Add a book

@@ -6,40 +6,33 @@ const usersDbPath = getDbPath('users.json');
 
 
 function passwordAuthentication(req, res) {
-return new Promise((resolve, reject) => {
-    //Get login details from the request data
-    const requestDataStream = [];
-    getRequestData(req, requestDataStream);
+    return new Promise((resolve, reject) => {
+        //Get login details from the request data
+        const requestDataStream = [];
+        getRequestData(req, requestDataStream);
 
-    //Search through saved users record to find a match
-    req.on("end", async () => {
-        const wholeRequestData = Buffer.concat(requestDataStream).toString();
-        await returnAllRecord(usersDbPath).
-        then(users => {
+        //Search through saved users record to find a match
+        req.on("end", async () => {
+            const wholeRequestData = Buffer.concat(requestDataStream).toString();
+             
+            const users = await returnAllRecord(usersDbPath);
             const usersArray = JSON.parse(users);
-            const message = {msg:null}
-            const userFound = usersArray.find(user => user.username === JSON.parse(wholeRequestData).username);
-            message.msg = `Welcome ${userFound.username}, You are now logged in.`;
             if (!wholeRequestData) {
-                message.msg = 'Username or password not provided.';
-                reject(message);
+                reject({error: 'Username or password not provided.'});
+                return;
             }
+            const userFound = usersArray.find(user => user.username === JSON.parse(wholeRequestData).username);
             if (!userFound) {
-                message.msg = 'User not found. Please sign up.';
-                reject(message);
+                reject({error: 'User not found. Please sign up.'});
+                return
             }
-        
             if (userFound.password !== JSON.parse(wholeRequestData).password) {
-                message.msg = 'Incorrect username or password.';
-                reject(message);
+                reject({error: 'Incorrect username or password.'});
+                return
             }
-            resolve(message);
-        }).
-        catch(error => {
-            console.log(error.msg);
+            resolve();
         });
-    });
-}); 
+    }); 
 
 }
 
