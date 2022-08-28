@@ -1,0 +1,14 @@
+[
+    {
+        "username": "adekunle100",
+        "password": "adekunlepass",
+        "email": "ade@node.com",
+        "role": "admin"
+    },
+    {
+        "username": "james100",
+        "password": "jamespass",
+        "email": "james@node.com",
+        "role": "reader"
+    }
+]
