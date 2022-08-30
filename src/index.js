@@ -10,7 +10,7 @@ const HOST = 'localhost';
 
 //Request Handler
 function requestHandler(req, res) {
-    if (req.url === '/books/getall' && req.method === 'GET') { //Get all books
+    if (req.url === '/books' && req.method === 'GET') { //Get all books
         //1. Password Authentication
         // passwordAuthentication(req, res).
         // then(() => {
@@ -32,17 +32,19 @@ function requestHandler(req, res) {
         // });
 
         //3. Access Control Level
-        aclAuth(req, res, ['admin', 'reader']).
-        then((msg) => {
-            getAllBooks(req, res, msg);
-        }).
-        catch(error => {
-            res.writeHead(401);
-            res.end(JSON.stringify(error));
-        });
+        // aclAuth(req, res, ['admin', 'reader']).
+        // then((msg) => {
+        //     getAllBooks(req, res, msg);
+        // }).
+        // catch(error => {
+        //     res.writeHead(401);
+        //     res.end(JSON.stringify(error));
+        // });
+
+        getAllBooks(req, res);
         
         
-    } else if (req.url === '/books/addbook' && req.method === 'POST') { //Add a book
+    } else if (req.url === '/books' && req.method === 'POST') { //Add a book
         tokenAuthentication(req, res).
         then(() => {
             addBook(req, res);
@@ -61,3 +63,7 @@ const server = http.createServer(requestHandler);
 
 //Start server
 server.listen(PORT, HOST, () => {console.log(`Server is running and listening to requests at: http://${HOST}:${PORT}`)});
+
+
+
+module.exports = server;

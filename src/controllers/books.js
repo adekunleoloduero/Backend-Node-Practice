@@ -13,7 +13,7 @@ function getAllBooks(req, res, msg) {
     then(books => {
         const booksArray = JSON.parse(books);
         booksArray.unshift(msg);
-        res.writeHead(200);
+        res.writeHead(200, {"Content-Type": 'application/json'});
         res.end(JSON.stringify(booksArray));
     });
 }
