@@ -42,6 +42,25 @@ function addBook(req, res) {
     });
 }
 
+
+function updateBook(req, res) {
+    const requestDataStream = [];
+    getRequestData(req, requestDataStream);
+    req.on("end", async () => {
+        let wholeRequestData = Buffer.concat(requestDataStream).toString();
+        let books = await returnAllRecord(booksDbPath);
+        books = JSON.parse(books);
+        wholeRequestData = JSON.parse(wholeRequestData);
+        const index = books.findIndex(book => book.id === wholeRequestData.id);
+        const book = books[index];
+        const updatedBook = {...book, ...wholeRequestData};
+        books[index] = updatedBook;
+        writeUpdatedRecord(booksDbPath, books);
+        res.writeHead(200);
+        res.end(JSON.stringify({"message": "One (1) book  updated."}));
+    });
+}
+
 //--End of books APIs--
     
 
@@ -51,4 +70,5 @@ function addBook(req, res) {
 module.exports = {
     getAllBooks,
     addBook,
+    updateBook,
 }

@@ -1,5 +1,5 @@
 const http = require('http');
-const { getAllBooks, addBook } = require('./controllers/books');
+const { getAllBooks, addBook, updateBook } = require('./controllers/books');
 const { passwordAuthentication, tokenAuthentication, aclAuth } = require('./controllers/authentication');
 
 
@@ -42,9 +42,9 @@ function requestHandler(req, res) {
         // });
 
         getAllBooks(req, res);
-        
-        
-    } else if (req.url === '/books' && req.method === 'POST') { //Add a book
+    } 
+
+    if (req.url === '/books' && req.method === 'POST') { //Add a book
         tokenAuthentication(req, res).
         then(() => {
             addBook(req, res);
@@ -53,6 +53,10 @@ function requestHandler(req, res) {
             res.writeHead(401);
             res.end(JSON.stringify(error));
         });
+    }
+
+    if (req.url === '/books' && req.method === 'PUT') {
+        updateBook(req, res);
     }
 }
 
