@@ -33,14 +33,26 @@ function writeUpdatedRecord(dbPath, updatedBooksRecord) {
 
 
 //Books data base path
-function getDbPath(base) {
+// function getDbPath(base) {
+//     const thisDirectory = path.dirname(__filename);
+//     const dbPath = path.join(thisDirectory, 'models', base);
+//     return dbPath;
+// }
+
+function getDbPath(toReplace, ...pathValues) {
+    let pathAfterRoot = '';
     const thisDirectory = path.dirname(__filename);
-    const dbPath = path.join(thisDirectory, 'models', base);
+    const rootDirectory = thisDirectory.split(`${path.sep}${toReplace}`)[0];
+    for (val of pathValues) {
+        pathAfterRoot += `${path.sep}${val}`;
+    }
+    const dbPath = path.join(rootDirectory, pathAfterRoot);
     return dbPath;
 }
 
-
-
+const toReplace = `${path.sep}test${path.sep}integration`;
+let dbPath 
+console.log(dbPath);
 
 module.exports = {
     getRequestData,

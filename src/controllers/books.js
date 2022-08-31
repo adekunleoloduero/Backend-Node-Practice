@@ -61,6 +61,11 @@ function updateBook(req, res) {
     });
 }
 
+
+function deleteBook(req, res) {
+
+}
+
 //--End of books APIs--
     
 
@@ -71,4 +76,5 @@ module.exports = {
     getAllBooks,
     addBook,
     updateBook,
+    deleteBook,
 }
